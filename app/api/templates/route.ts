@@ -1,0 +1,7 @@
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/db/prisma';
+
+export async function GET() {
+  const templates = await prisma.template.findMany({ orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }] });
+  return NextResponse.json({ templates });
+}
