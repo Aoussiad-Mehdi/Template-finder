@@ -20,8 +20,19 @@ export function AnalyzeForm() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ url })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to analyze URL');
+
+      const rawBody = await res.text();
+      let data: any = {};
+      try {
+        data = rawBody ? JSON.parse(rawBody) : {};
+      } catch {
+        throw new Error('Server returned an invalid response. Please try again.');
+      }
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to analyze URL');
+      }
+
       router.push(`/results/${data.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');

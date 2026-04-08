@@ -86,6 +86,11 @@ Optional fallbacks:
 - `POST /api/admin/affiliate-config`
 - `POST /api/admin/reanalyze/:id`
 
+## Authentication
+
+- Public endpoints (`POST /api/analyze`, `GET /api/analyze/:id`, `GET /api/templates`) do **not** require an API key for MVP.
+- Admin write endpoints require the `x-admin-password` header to match `ADMIN_PASSWORD`.
+
 ## Affiliate link helper
 
 `buildAffiliateLink(templateSlug: string): Promise<string>`
