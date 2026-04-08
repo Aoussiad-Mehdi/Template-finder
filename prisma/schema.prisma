@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum JobStatus {
+  queued
+  running
+  completed
+  failed
+}
+
+enum TemplateVersion {
+  v7_0
+  v7_1
+}
+
+enum TemplateStatus {
+  current
+  legacy
+  archived
+}
+
+enum DeepLinkMode {
+  path
+  query
+}
+
+enum PatternType {
+  script
+  asset
+  meta
+  dom
+  class
+  text
+}
+
+model AnalysisJob {
+  id                     String   @id @default(cuid())
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  inputUrl               String
+  normalizedUrl          String   @unique
+  status                 JobStatus @default(queued)
+  platform               String?
+  platformConfidence     Int?
+  isSquarespace          Boolean  @default(false)
+  squarespaceVersion     String?
+  detectedTemplateId     String?
+  detectedFamily         String?
+  detectedConfidence     Int?
+  closestMatchTemplateId String?
+  closestMatchConfidence Int?
+  recommendedTemplateId  String?
+  recommendedConfidence  Int?
+  reasonSummary          String?
+  rawSignalsJson         Json?
+  screenshotUrl          String?
+  errorMessage           String?
+}
+
+model Template {
+  id             String          @id @default(cuid())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  name           String
+  slug           String          @unique
+  version        TemplateVersion
+  family         String?
+  officialUrl    String
+  previewImageUrl String?
+  status         TemplateStatus  @default(current)
+  industryTags   String[]
+  styleTags      String[]
+  layoutTags     String[]
+  description    String?
+  isCurrent      Boolean         @default(true)
+  isRecommended  Boolean         @default(true)
+  sortOrder      Int             @default(0)
+}
+
+model AffiliateConfig {
+  id               String       @id @default(cuid())
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  baseAffiliateUrl String
+  deepLinkMode     DeepLinkMode @default(query)
+  enabled          Boolean      @default(true)
+}
+
+model PlatformSignalRule {
+  id           String      @id @default(cuid())
+  name         String
+  platform     String
+  weight       Int
+  patternType  PatternType
+  patternValue String
+  enabled      Boolean     @default(true)
+}
+
+model SquarespaceSignalRule {
+  id           String       @id @default(cuid())
+  name         String
+  version      TemplateVersion?
+  family       String?
+  templateName String?
+  weight       Int
+  patternType  PatternType
+  patternValue String
+  enabled      Boolean      @default(true)
+}
+
+model RecommendationProfile {
+  id                String   @id @default(cuid())
+  name              String
+  industryTags      String[]
+  styleTags         String[]
+  layoutTags        String[]
+  headerPatterns    String[]
+  heroPatterns      String[]
+  gridPatterns      String[]
+  commercePatterns  String[]
+  blogPatterns      String[]
+  portfolioPatterns String[]
+  notes             String?
+}
