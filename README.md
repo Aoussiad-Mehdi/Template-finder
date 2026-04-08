@@ -113,3 +113,8 @@ Includes tests for URL normalization, affiliate link generation, platform/versio
 - Detection is intentionally honest and explainable, not overconfident.
 - For heavily customized sites, the app surfaces uncertainty and still gives practical rebuild recommendations.
 - Architecture is separated for future SaaS expansion (bulk analysis, accounts, API plans, analytics).
+
+
+## No-database local mode
+
+If PostgreSQL is unavailable, the app automatically falls back to an in-memory store for analysis jobs, templates, and affiliate config so Analyze still works for local testing.
