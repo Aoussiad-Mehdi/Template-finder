@@ -3,7 +3,20 @@ import Image from 'next/image';
 import { confidenceLabel } from '@/lib/utils/confidence';
 
 export function ResultCard({ data }: { data: any }) {
-  const { job, detectedTemplate, closestMatchTemplate, recommendedTemplate, affiliateLink } = data;
+  const job = data?.job;
+
+  if (!job) {
+    return (
+      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+        <h2 className="text-xl font-semibold">Analysis unavailable</h2>
+        <p className="mt-2 text-slate-300">
+          We couldn&apos;t load this analysis result yet. It may still be processing, or the job ID may be invalid.
+        </p>
+      </div>
+    );
+  }
+
+  const { detectedTemplate, closestMatchTemplate, recommendedTemplate, affiliateLink } = data;
   const confidence = job.platform === 'Squarespace'
     ? (job.squarespaceVersion === '7.0' ? (job.detectedConfidence ?? job.platformConfidence) : (job.closestMatchConfidence ?? job.platformConfidence))
     : job.platformConfidence;
@@ -15,7 +28,7 @@ export function ResultCard({ data }: { data: any }) {
         <p className="font-medium">{job.normalizedUrl}</p>
         <p className="mt-2">Built with: <strong>{job.platform || 'Unknown'}</strong></p>
         {job.isSquarespace && <p>Version: <strong>{job.squarespaceVersion}</strong></p>}
-        <p>Confidence: <strong>{confidence}% ({confidenceLabel(confidence || 0)})</strong></p>
+        <p>Confidence: <strong>{confidence ?? 0}% ({confidenceLabel(confidence || 0)})</strong></p>
       </section>
 
       <section>
