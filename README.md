@@ -66,7 +66,7 @@ npm run dev
 
 Required:
 
-- `DATABASE_URL`
+- `DATABASE_URL` (if omitted locally, app falls back to `postgresql://postgres:postgres@localhost:5432/template_finder`)
 - `ADMIN_PASSWORD`
 - `ANALYSIS_CACHE_HOURS`
 - `PLAYWRIGHT_TIMEOUT_MS`
